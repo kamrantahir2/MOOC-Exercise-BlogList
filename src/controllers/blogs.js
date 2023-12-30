@@ -1,4 +1,4 @@
-import express, { request } from "express";
+import express, { request, response } from "express";
 const blogRouter = express.Router();
 import blog from "../models/blog.js";
 
@@ -19,6 +19,12 @@ blogRouter.post("/", (request, response) => {
 
   newBlog.save().then((result) => {
     response.status(201).json(result);
+  });
+});
+
+blogRouter.delete("/:id", (request, response) => {
+  blog.findByIdAndDelete(request.params.id).then(() => {
+    response.status(204).end();
   });
 });
 
