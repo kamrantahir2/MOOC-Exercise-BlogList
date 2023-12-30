@@ -14,4 +14,12 @@ blogRouter.get("/:id", (request, response) => {
   });
 });
 
+blogRouter.post("/", (request, response) => {
+  const newBlog = new blog(request.body);
+
+  newBlog.save().then((result) => {
+    response.status(201).json(result);
+  });
+});
+
 export default blogRouter;
