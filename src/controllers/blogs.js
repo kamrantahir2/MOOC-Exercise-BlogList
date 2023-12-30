@@ -8,24 +8,39 @@ blogRouter.get("/", (request, response) => {
   });
 });
 
-blogRouter.get("/:id", (request, response) => {
-  blog.findById(request.params.id).then((foundBlog) => {
-    response.json(foundBlog);
-  });
+blogRouter.get("/:id", (request, response, next) => {
+  blog
+    .findById(request.params.id)
+    .then((foundBlog) => {
+      response.json(foundBlog);
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
 
-blogRouter.post("/", (request, response) => {
+blogRouter.post("/", (request, response, next) => {
   const newBlog = new blog(request.body);
 
-  newBlog.save().then((result) => {
-    response.status(201).json(result);
-  });
+  newBlog
+    .save()
+    .then((result) => {
+      response.status(201).json(result);
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
 
-blogRouter.delete("/:id", (request, response) => {
-  blog.findByIdAndDelete(request.params.id).then(() => {
-    response.status(204).end();
-  });
+blogRouter.delete("/:id", (request, response, next) => {
+  blog
+    .findByIdAndDelete(request.params.id)
+    .then(() => {
+      response.status(204).end();
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
 
 export default blogRouter;
