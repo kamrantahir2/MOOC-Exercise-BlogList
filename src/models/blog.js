@@ -9,11 +9,4 @@ const blogSchema = new mongoose.Schema({
 
 const Blog = mongoose.model("Blog", blogSchema);
 
-const blogObject = new Blog({
-  title: "Title",
-  author: "String",
-  url: "String",
-  likes: 0,
-});
-
-export default { Blog };
+export default Blog;
