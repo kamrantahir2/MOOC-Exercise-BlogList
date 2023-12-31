@@ -12,7 +12,7 @@ const totalLikes = (blogs) => {
   return total;
 };
 
-const mostLikes = (blogs) => {
+const favouriteBlog = (blogs) => {
   if (blogs.length === 0) {
     return {};
   }
@@ -28,4 +28,4 @@ const mostLikes = (blogs) => {
   };
 };
 
-module.exports = { dummy, totalLikes, mostLikes };
+module.exports = { dummy, totalLikes, favouriteBlog };

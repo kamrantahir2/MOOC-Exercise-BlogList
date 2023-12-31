@@ -92,7 +92,7 @@ describe("Favourite blog", () => {
       },
     ];
 
-    const result = listHelper.mostLikes(listOfBlogs);
+    const result = listHelper.favouriteBlog(listOfBlogs);
     const expected = {
       title: "Go To Statement Considered Harmful",
       author: "Edsger W. Dijkstra",
@@ -114,7 +114,7 @@ describe("Favourite blog", () => {
       },
     ];
 
-    const result = listHelper.mostLikes(blogs);
+    const result = listHelper.favouriteBlog(blogs);
     const expected = {
       title: "Go To Statement Considered Harmful",
       author: "Edsger W. Dijkstra",
@@ -127,7 +127,7 @@ describe("Favourite blog", () => {
   test("empty array returns empty object", () => {
     const blogs = [];
 
-    const result = listHelper.mostLikes(blogs);
+    const result = listHelper.favouriteBlog(blogs);
     const expected = {};
 
     expect(result).toEqual(expected);
