@@ -52,4 +52,30 @@ const mostBlogs = (blogs) => {
   return newObj;
 };
 
-module.exports = { dummy, totalLikes, favouriteBlog, mostBlogs };
+const mostLikes = (blogs) => {
+  const grouped = _.groupBy(blogs, "author");
+
+  const arr = Array.from(Object.entries(grouped));
+
+  let most = {
+    author: "",
+    likes: 0,
+  };
+
+  for (let i = 0; i < arr.length; i++) {
+    let total = 0;
+    for (let j = 0; j < arr[i][1].length; j++) {
+      total = total + arr[i][1][j].likes;
+      if (total > most.likes) {
+        most = {
+          author: arr[i][0],
+          likes: total,
+        };
+      }
+    }
+  }
+
+  return most;
+};
+
+module.exports = { dummy, totalLikes, favouriteBlog, mostBlogs, mostLikes };
