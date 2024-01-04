@@ -1,4 +1,4 @@
-const _ = require("lodash");
+import _ from "lodash";
 
 const dummy = (blogs) => {
   return 1;
@@ -78,4 +78,4 @@ const mostLikes = (blogs) => {
   return most;
 };
 
-module.exports = { dummy, totalLikes, favouriteBlog, mostBlogs, mostLikes };
+export default { dummy, totalLikes, favouriteBlog, mostBlogs, mostLikes };
