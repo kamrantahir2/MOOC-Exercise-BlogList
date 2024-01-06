@@ -20,6 +20,14 @@ describe("api tests", () => {
       .expect(200)
       .expect("Content-Type", /application\/json/);
   });
+
+  test("blog contains id paramater", async () => {
+    const response = await api.get("/api/blogs");
+    const contents = response.body;
+    contents.forEach((blog) => {
+      expect(blog.id).toBeDefined();
+    });
+  });
 });
 
 afterAll(async () => {
