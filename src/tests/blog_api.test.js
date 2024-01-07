@@ -28,24 +28,38 @@ describe("api tests", () => {
       expect(blog.id).toBeDefined();
     });
   });
-});
 
-test("valid blog is successfully added", async () => {
-  const validBlog = {
-    title: "First blog",
-    author: "First author",
-    url: "url",
-    likes: 12,
-  };
+  test("valid blog is successfully added", async () => {
+    const validBlog = {
+      title: "First blog",
+      author: "First author",
+      url: "url",
+      likes: 12,
+    };
 
-  await api
-    .post("/api/blogs")
-    .send(validBlog)
-    .expect(201)
-    .expect("Content-Type", /application\/json/);
+    await api
+      .post("/api/blogs")
+      .send(validBlog)
+      .expect(201)
+      .expect("Content-Type", /application\/json/);
 
-  const blogsAtEnd = await helper.blogsInDb();
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+  });
+
+  test("blog without likes property is not saved", async () => {
+    const validBlog = {
+      title: "First blog",
+      author: "First author",
+      url: "url",
+    };
+
+    await api.post("/api/blogs").send(validBlog).expect(404);
+
+    const blogsAtEnd = await helper.blogsInDb();
+
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+  });
 });
 
 afterAll(async () => {
