@@ -19,21 +19,15 @@ blogRouter.get("/:id", (request, response, next) => {
     });
 });
 
-blogRouter.post("/", (request, response, next) => {
+blogRouter.post("/", async (request, response, next) => {
   const newBlog = new blog(request.body);
 
   if (!newBlog.likes) {
     return response.status(404).end();
   }
 
-  newBlog
-    .save()
-    .then((result) => {
-      response.status(201).json(result);
-    })
-    .catch((error) => {
-      next(error);
-    });
+  await newBlog.save();
+  response.status(201).json(newBlog);
 });
 
 blogRouter.delete("/:id", (request, response, next) => {
