@@ -64,6 +64,19 @@ describe("api tests", () => {
 
     expect(blogsAtEnd[length].likes).toEqual(0);
   });
+
+  test("blog without title or url property is not added", async () => {
+    const invalidBlog = {
+      author: "First author",
+      likes: 12,
+    };
+
+    await api.post("/api/blogs").send(invalidBlog).expect(400);
+
+    const blogsAtEnd = await helper.blogsInDb();
+
+    expect(blogsAtEnd.length).toEqual(helper.initialBlogs.length);
+  });
 });
 
 afterAll(async () => {

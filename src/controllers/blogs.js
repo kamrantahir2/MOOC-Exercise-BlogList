@@ -26,6 +26,10 @@ blogRouter.post("/", async (request, response, next) => {
     newBlog.likes = 0;
   }
 
+  if (!newBlog.title || !newBlog.url) {
+    return response.status(400).end();
+  }
+
   await newBlog.save();
   response.status(201).json(newBlog);
 });
