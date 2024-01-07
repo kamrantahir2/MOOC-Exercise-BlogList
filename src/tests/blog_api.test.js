@@ -88,6 +88,21 @@ describe("api tests", () => {
 
     expect(savedBlogs.length).toEqual(helper.initialBlogs.length - 1);
   });
+
+  test("existing blog can be successfully updated", async () => {
+    let savedBlogs = await helper.blogsInDb();
+    const id = savedBlogs[0].id;
+
+    const updatedBlog = { ...savedBlogs[0], likes: savedBlogs[0].likes + 1 };
+
+    await api.put(`/api/blogs/${id}`).send(updatedBlog).expect(200);
+
+    savedBlogs = await helper.blogsInDb();
+
+    const originalLikes = helper.initialBlogs[0].likes;
+
+    expect(savedBlogs[0].likes).toEqual(originalLikes + 1);
+  });
 });
 
 afterAll(async () => {

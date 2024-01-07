@@ -45,4 +45,20 @@ blogRouter.delete("/:id", (request, response, next) => {
     });
 });
 
+blogRouter.put("/:id", async (request, response, next) => {
+  if (!request.body.title || !request.body.url) {
+    return response.status(400).end();
+  }
+
+  try {
+    await blog.findByIdAndUpdate(request.params.id, request.body, {
+      new: true,
+    });
+
+    response.status(200).json(request.body);
+  } catch (err) {
+    next(err);
+  }
+});
+
 export default blogRouter;
