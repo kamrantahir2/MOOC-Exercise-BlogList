@@ -77,6 +77,17 @@ describe("api tests", () => {
 
     expect(blogsAtEnd.length).toEqual(helper.initialBlogs.length);
   });
+
+  test("existing blog can be successfully deleted", async () => {
+    let savedBlogs = await helper.blogsInDb();
+    const id = savedBlogs[0].id;
+
+    await api.delete(`/api/blogs/${id}`).expect(204);
+
+    savedBlogs = await helper.blogsInDb();
+
+    expect(savedBlogs.length).toEqual(helper.initialBlogs.length - 1);
+  });
 });
 
 afterAll(async () => {
