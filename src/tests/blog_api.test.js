@@ -21,13 +21,31 @@ describe("api tests", () => {
       .expect("Content-Type", /application\/json/);
   });
 
-  test("blog contains id paramater", async () => {
+  test("blog contains id parameter", async () => {
     const response = await api.get("/api/blogs");
     const contents = response.body;
     contents.forEach((blog) => {
       expect(blog.id).toBeDefined();
     });
   });
+});
+
+test("valid blog is successfully added", async () => {
+  const validBlog = {
+    title: "First blog",
+    author: "First author",
+    url: "url",
+    likes: 12,
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(validBlog)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
 });
 
 afterAll(async () => {
