@@ -23,7 +23,7 @@ blogRouter.post("/", async (request, response, next) => {
   const newBlog = new blog(request.body);
 
   if (!newBlog.likes) {
-    return response.status(404).end();
+    newBlog.likes = 0;
   }
 
   await newBlog.save();

@@ -54,11 +54,15 @@ describe("api tests", () => {
       url: "url",
     };
 
-    await api.post("/api/blogs").send(validBlog).expect(404);
+    await api.post("/api/blogs").send(validBlog).expect(201);
 
-    const blogsAtEnd = await helper.blogsInDb();
+    let blogsAtEnd = await helper.blogsInDb();
 
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+    blogsAtEnd = await helper.blogsInDb();
+
+    const length = blogsAtEnd.length - 1;
+
+    expect(blogsAtEnd[length].likes).toEqual(0);
   });
 });
 
