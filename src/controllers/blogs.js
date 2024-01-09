@@ -2,6 +2,17 @@ import express, { request, response } from "express";
 const blogRouter = express.Router();
 import blog from "../models/blog.js";
 import User from "../models/user.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
+
+const getTokenFrom = (request) => {
+  const authorization = request.get("authorization");
+  if (authorization && authorization.startsWith("Bearer ")) {
+    return authorization.replace("Bearer ", "");
+  }
+  return null;
+};
 
 blogRouter.get("/", async (request, response) => {
   const blogs = await blog.find({}).populate("user", {
@@ -25,7 +36,13 @@ blogRouter.get("/:id", (request, response, next) => {
 blogRouter.post("/", async (request, response, next) => {
   const body = request.body;
 
-  const user = await User.findById(body.userId);
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
+
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "token invalid" });
+  }
+
+  const user = await User.findById(decodedToken.id);
 
   const newBlog = new blog({
     title: body.title,
