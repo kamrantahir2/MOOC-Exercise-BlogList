@@ -6,6 +6,7 @@ import cors from "cors";
 import middleware from "./utils/middleware.js";
 import blogRouter from "./controllers/blogs.js";
 import usersRouter from "./controllers/users.js";
+import bodyParser from "body-parser";
 
 mongoose.set("strictQuery", false);
 
@@ -16,6 +17,7 @@ mongoose
 
 app.use(cors());
 app.use(express.json());
+
 app.use(middleware.requestLogger);
 app.use("/api/blogs", blogRouter);
 app.use("/api/users", usersRouter);
