@@ -44,4 +44,4 @@ const usersInDb = async () => {
   return users.map((u) => u.toJSON());
 };
 
-export default { initialBlogs, blogsInDb, nonExistingId };
+export default { initialBlogs, blogsInDb, nonExistingId, usersInDb };
