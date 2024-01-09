@@ -1,7 +1,12 @@
 import bcrypt from "bcrypt";
-import express from "express";
+import express, { request } from "express";
 const usersRouter = express.Router();
-import User from "../models/user";
+import User from "../models/user.js";
+
+usersRouter.get("/", async (request, response) => {
+  const users = await User.find({});
+  response.json(users);
+});
 
 usersRouter.post("/", async (request, response) => {
   const { username, name, password } = request.body;
