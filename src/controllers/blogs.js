@@ -1,11 +1,14 @@
 import express, { request, response } from "express";
 const blogRouter = express.Router();
 import blog from "../models/blog.js";
+import User from "../models/user.js";
 
-blogRouter.get("/", (request, response) => {
-  blog.find({}).then((blogs) => {
-    response.json(blogs);
+blogRouter.get("/", async (request, response) => {
+  const blogs = await blog.find({}).populate("user", {
+    username: 1,
+    name: 1,
   });
+  response.json(blogs);
 });
 
 blogRouter.get("/:id", (request, response, next) => {
@@ -20,7 +23,17 @@ blogRouter.get("/:id", (request, response, next) => {
 });
 
 blogRouter.post("/", async (request, response, next) => {
-  const newBlog = new blog(request.body);
+  const body = request.body;
+
+  const user = await User.findById(body.userId);
+
+  const newBlog = new blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes,
+    user: user.id,
+  });
 
   if (!newBlog.likes) {
     newBlog.likes = 0;
@@ -30,7 +43,9 @@ blogRouter.post("/", async (request, response, next) => {
     return response.status(400).end();
   }
 
-  await newBlog.save();
+  const savedBlog = await newBlog.save();
+  user.blogs = user.blogs.concat(savedBlog._id);
+  await user.save();
   response.status(201).json(newBlog);
 });
 
