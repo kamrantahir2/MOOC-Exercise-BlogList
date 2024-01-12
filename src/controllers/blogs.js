@@ -63,7 +63,7 @@ blogRouter.delete("/:id", async (request, response, next) => {
   if (request.userId !== blogUserId) {
     response.status(401).json({ error: "User not authorized" });
   }
-
+  await blog.deleteOne(foundBlog);
   response.status(204).end();
 });
 
