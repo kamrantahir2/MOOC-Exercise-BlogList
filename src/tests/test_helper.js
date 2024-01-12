@@ -1,5 +1,9 @@
 import Blog from "../models/blog.js";
 import User from "../models/user.js";
+import app from "../app.js";
+import supertest from "supertest";
+const api = supertest(app);
+import mongoose from "mongoose";
 
 const initialBlogs = [
   {
@@ -44,4 +48,9 @@ const usersInDb = async () => {
   return users.map((u) => u.toJSON());
 };
 
-export default { initialBlogs, blogsInDb, nonExistingId, usersInDb };
+export default {
+  initialBlogs,
+  blogsInDb,
+  nonExistingId,
+  usersInDb,
+};
