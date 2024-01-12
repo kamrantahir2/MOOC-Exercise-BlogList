@@ -6,13 +6,13 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
-const getTokenFrom = (request) => {
-  const authorization = request.get("authorization");
-  if (authorization && authorization.startsWith("Bearer ")) {
-    return authorization.replace("Bearer ", "");
-  }
-  return null;
-};
+// const getTokenFrom = (request) => {
+//   const authorization = request.get("authorization");
+//   if (authorization && authorization.startsWith("Bearer ")) {
+//     return authorization.replace("Bearer ", "");
+//   }
+//   return null;
+// };
 
 blogRouter.get("/", async (request, response) => {
   const blogs = await blog.find({}).populate("user", {
@@ -36,7 +36,7 @@ blogRouter.get("/:id", (request, response, next) => {
 blogRouter.post("/", async (request, response, next) => {
   const body = request.body;
 
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
 
   if (!decodedToken.id) {
     return response.status(401).json({ error: "token invalid" });
