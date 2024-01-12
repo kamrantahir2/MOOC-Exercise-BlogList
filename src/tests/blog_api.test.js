@@ -30,6 +30,12 @@ beforeEach(async () => {
   await api.post("/api/users").send(unauthorizedUser);
 });
 
+const getUserToken = async (details) => {
+  const resp = await api.post("/api/login").send(details);
+
+  return resp.body.token;
+};
+
 describe("api tests", () => {
   test("blogs are returned as json", async () => {
     await api
@@ -54,11 +60,7 @@ describe("api tests", () => {
       likes: 12,
     };
 
-    const response = await api
-      .post("/api/login")
-      .send({ username: "test", password: "test" });
-
-    const token = response.body.token;
+    const token = await getUserToken({ username: "test", password: "test" });
 
     await api
       .post("/api/blogs")
