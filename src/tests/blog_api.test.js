@@ -3,14 +3,31 @@ import supertest from "supertest";
 import app from "../app.js";
 import Blog from "../models/blog.js";
 import helper from "./test_helper.js";
+import User from "../models/user.js";
 
 const api = supertest(app);
 
 beforeEach(async () => {
   await Blog.deleteMany({});
+  await User.deleteMany({});
   const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
   const promiseArray = blogObjects.map((blog) => blog.save());
   await Promise.all(promiseArray);
+
+  const user = {
+    name: "test",
+    username: "test",
+    password: "test",
+  };
+
+  const unauthorizedUser = {
+    name: "unauthorized",
+    username: "unauthorized",
+    password: "unauthorized",
+  };
+
+  await api.post("/api/users").send(user);
+  await api.post("/api/users").send(unauthorizedUser);
 });
 
 describe("api tests", () => {
@@ -37,9 +54,16 @@ describe("api tests", () => {
       likes: 12,
     };
 
+    const response = await api
+      .post("/api/login")
+      .send({ username: "test", password: "test" });
+
+    const token = response.body.token;
+
     await api
       .post("/api/blogs")
       .send(validBlog)
+      .set({ Authorization: `Bearer ${token}` })
       .expect(201)
       .expect("Content-Type", /application\/json/);
 
