@@ -1,3 +1,5 @@
+import Blog from "../models/blog.js";
+import jwt from "jsonwebtoken";
 const requestLogger = (request, response, next) => {
   console.log("Method:", request.method);
   console.log("Path:  ", request.path);
@@ -36,4 +38,18 @@ const tokenExtractor = (request, response, next) => {
   next();
 };
 
-export default { requestLogger, unknownEndpoint, errorHandler, tokenExtractor };
+const userExtractor = (request, response, next) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+  request.userId = decodedToken.id;
+
+  next();
+};
+
+export default {
+  requestLogger,
+  unknownEndpoint,
+  errorHandler,
+  tokenExtractor,
+  userExtractor,
+};

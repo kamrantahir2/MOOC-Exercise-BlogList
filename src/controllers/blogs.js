@@ -3,16 +3,9 @@ const blogRouter = express.Router();
 import blog from "../models/blog.js";
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
+import "express-async-errors";
 import dotenv from "dotenv";
 dotenv.config();
-
-// const getTokenFrom = (request) => {
-//   const authorization = request.get("authorization");
-//   if (authorization && authorization.startsWith("Bearer ")) {
-//     return authorization.replace("Bearer ", "");
-//   }
-//   return null;
-// };
 
 blogRouter.get("/", async (request, response) => {
   const blogs = await blog.find({}).populate("user", {
@@ -36,13 +29,11 @@ blogRouter.get("/:id", (request, response, next) => {
 blogRouter.post("/", async (request, response, next) => {
   const body = request.body;
 
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-
-  if (!decodedToken.id) {
+  if (!request.userId) {
     return response.status(401).json({ error: "token invalid" });
   }
 
-  const user = await User.findById(decodedToken.id);
+  const user = await User.findById(request.userId);
 
   const newBlog = new blog({
     title: body.title,
@@ -66,15 +57,14 @@ blogRouter.post("/", async (request, response, next) => {
   response.status(201).json(newBlog);
 });
 
-blogRouter.delete("/:id", (request, response, next) => {
-  blog
-    .findByIdAndDelete(request.params.id)
-    .then(() => {
-      response.status(204).end();
-    })
-    .catch((error) => {
-      next(error);
-    });
+blogRouter.delete("/:id", async (request, response, next) => {
+  const foundBlog = await blog.findById(request.params.id);
+  const blogUserId = foundBlog.user.toString();
+  if (request.userId !== blogUserId) {
+    response.status(401).json({ error: "User not authorized" });
+  }
+
+  response.status(204).end();
 });
 
 blogRouter.put("/:id", async (request, response, next) => {
