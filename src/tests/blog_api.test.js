@@ -10,9 +10,6 @@ const api = supertest(app);
 beforeEach(async () => {
   await Blog.deleteMany({});
   await User.deleteMany({});
-  const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
-  const promiseArray = blogObjects.map((blog) => blog.save());
-  await Promise.all(promiseArray);
 
   const user = {
     name: "test",
@@ -28,6 +25,29 @@ beforeEach(async () => {
 
   await api.post("/api/users").send(user);
   await api.post("/api/users").send(unauthorizedUser);
+
+  const found = await User.findOne({ name: user.name });
+
+  const userId = await found._id.toString();
+
+  const blogs = helper.initialBlogs;
+
+  blogs.map((blog) => {
+    blog.user = userId;
+  });
+
+  const blogObjects = helper.initialBlogs.map((blog) => {
+    return new Blog(blog);
+  });
+
+  const token = await getUserToken({
+    username: "test",
+    password: "test",
+  });
+
+  console.log("OBJECTS", blogObjects);
+  const promiseArray = blogObjects.map((blog) => blog.save());
+  await Promise.all(promiseArray);
 });
 
 const getUserToken = async (details) => {
@@ -123,7 +143,15 @@ describe("api tests", () => {
     let savedBlogs = await helper.blogsInDb();
     const id = savedBlogs[0].id;
 
-    await api.delete(`/api/blogs/${id}`).expect(204);
+    const token = `Bearer ${await getUserToken({
+      username: "test",
+      password: "test",
+    })}`;
+
+    await api
+      .delete(`/api/blogs/${id}`)
+      .set({ Authorization: token })
+      .expect(204);
 
     savedBlogs = await helper.blogsInDb();
 
