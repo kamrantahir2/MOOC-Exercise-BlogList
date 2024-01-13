@@ -73,14 +73,20 @@ describe("api tests", () => {
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
   });
 
-  test("blog without likes property is not saved", async () => {
+  test("blog without likes property is set to 0 likes", async () => {
     const validBlog = {
       title: "First blog",
       author: "First author",
       url: "url",
     };
 
-    await api.post("/api/blogs").send(validBlog).expect(201);
+    const token = await getUserToken({ username: "test", password: "test" });
+
+    await api
+      .post("/api/blogs")
+      .send(validBlog)
+      .set({ Authorization: `Bearer ${token}` })
+      .expect(201);
 
     let blogsAtEnd = await helper.blogsInDb();
 
