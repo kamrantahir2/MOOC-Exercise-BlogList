@@ -103,7 +103,16 @@ describe("api tests", () => {
       likes: 12,
     };
 
-    await api.post("/api/blogs").send(invalidBlog).expect(400);
+    const token = `Bearer ${await getUserToken({
+      username: "test",
+      password: "test",
+    })}`;
+
+    await api
+      .post("/api/blogs")
+      .set({ Authorization: token })
+      .send(invalidBlog)
+      .expect(400);
 
     const blogsAtEnd = await helper.blogsInDb();
 
