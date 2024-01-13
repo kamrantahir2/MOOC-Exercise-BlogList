@@ -172,6 +172,20 @@ describe("api tests", () => {
 
     expect(savedBlogs[0].likes).toEqual(originalLikes + 1);
   });
+
+  test("blog added without token returns 401 error", async () => {
+    const validBlog = {
+      title: "First blog",
+      author: "First author",
+      url: "url",
+    };
+
+    await api.post("/api/blogs").send(validBlog).expect(401);
+
+    const blogsAtStart = helper.initialBlogs;
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length);
+  });
 });
 
 afterAll(async () => {
