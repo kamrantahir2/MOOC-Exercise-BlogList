@@ -1,12 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import login from "./services/login.js";
+import blogService from "./services/blogs.js";
+import Blog from "./components/Blog.jsx";
 
 function App() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [blogs, setBlogs] = useState(null);
+
+  useEffect(() => {
+    blogService.getAll().then((response) => {
+      setBlogs(response);
+      console.log(response);
+    });
+  }, []);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -52,7 +62,12 @@ function App() {
 
   return (
     <div>
-      <h1>You have logged in</h1>
+      <h1>Blogs</h1>
+      <ul>
+        {blogs.map((blog) => {
+          return <Blog key={blog.id} blog={blog} />;
+        })}
+      </ul>
     </div>
   );
 }
