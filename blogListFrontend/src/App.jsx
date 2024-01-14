@@ -5,7 +5,7 @@ import Blog from "./components/Blog.jsx";
 import loginService from "./services/login.js";
 
 function App() {
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [message, setMessage] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -13,6 +13,15 @@ function App() {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
+  const [likes, setLikes] = useState("");
+  const [style, setStyle] = useState(null);
+
+  const resetMessage = () => {
+    setTimeout(() => {
+      setMessage(null);
+      setStyle(null);
+    }, 5000);
+  };
 
   useEffect(() => {
     const loggedInUser = window.localStorage.getItem("loggedBlogappUser");
@@ -41,11 +50,13 @@ function App() {
       setUser(user);
       setUsername("");
       setPassword("");
+      setMessage("Logged in");
+      setStyle("message");
+      resetMessage();
     } catch (error) {
-      setErrorMessage("Wrong credentials");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      setMessage("Wrong credentials");
+      setStyle("error");
+      resetMessage();
     }
   };
 
@@ -53,27 +64,54 @@ function App() {
     window.localStorage.removeItem("loggedBlogappUser");
     blogService.setToken(null);
     setUser(null);
+    setMessage("You have logged out");
+    setStyle("message");
+    resetMessage();
   };
 
   const handleCreate = async (event) => {
-    event.preventDefault();
-    const blog = { title, author, url };
-    const created = await blogService.create(blog);
-    console.log("New blog created: ", created);
-    const allBlogs = await blogService.getAll();
-    setBlogs(allBlogs);
+    try {
+      event.preventDefault();
+      if (!title || !author | !url) {
+        setMessage("Blog must have a title, author and URL");
+        setStyle("error");
+        resetMessage();
+        return;
+      }
+      const blog = { title, author, url, likes };
+      const created = await blogService.create(blog);
+      console.log("New blog created: ", created);
+      const allBlogs = await blogService.getAll();
+      setBlogs(allBlogs);
+      setMessage("New blog has been added");
+      setStyle("message");
+      resetMessage();
+    } catch (error) {
+      setMessage(error);
+      setStyle("error");
+      resetMessage();
+    }
   };
 
   const handleDelete = async (id) => {
-    await blogService.deleteBlog(id);
-    const allBlogs = await blogService.getAll();
-    setBlogs(allBlogs);
+    try {
+      await blogService.deleteBlog(id);
+      const allBlogs = await blogService.getAll();
+      setBlogs(allBlogs);
+      setMessage("Blog has been deleted");
+      setStyle("message");
+      resetMessage();
+    } catch (error) {
+      setMessage("Error deleting blog", error);
+      setStyle("error");
+      resetMessage();
+    }
   };
 
   if (!user) {
     return (
       <>
-        <h3>{errorMessage}</h3>
+        <div className={style}>{message}</div>
         <h2>Log in to application</h2>
         <form onSubmit={handleLogin}>
           <div>
@@ -100,6 +138,7 @@ function App() {
 
   return (
     <div>
+      <div className={style}>{message}</div>
       <h2>Blogs</h2>
       <p>{user.name} logged in</p>
       <button onClick={handleLogout}>Log out</button>
@@ -125,6 +164,14 @@ function App() {
         <div>
           Url:{" "}
           <input type="text" onChange={({ target }) => setUrl(target.value)} />
+        </div>
+
+        <div>
+          Likes:{" "}
+          <input
+            type="text"
+            onChange={({ target }) => setLikes(target.value)}
+          />
         </div>
 
         <button type="submit">Submit</button>

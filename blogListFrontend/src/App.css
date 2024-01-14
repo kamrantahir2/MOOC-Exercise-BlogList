@@ -40,3 +40,25 @@
 .read-the-docs {
   color: #888;
 }
+
+.error {
+  background-color: black;
+  width: 500px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid red;
+  border-radius: 20px;
+}
+
+.message {
+  background-color: black;
+  width: 500px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid green;
+  border-radius: 20px;
+}
