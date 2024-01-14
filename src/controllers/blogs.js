@@ -69,9 +69,11 @@ blogRouter.delete(
   async (request, response, next) => {
     const foundBlog = await blog.findById(request.params.id);
 
+    console.log("FOUND BLOG: ", foundBlog);
+
     const blogUserId = foundBlog.user.toString();
     if (request.userId !== blogUserId) {
-      response.status(401).json({ error: "User not authorized" });
+      return response.status(401).json({ error: "User not authorized" });
     }
     await blog.deleteOne(foundBlog);
     response.status(204).end();
