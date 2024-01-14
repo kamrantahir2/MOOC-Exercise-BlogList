@@ -68,6 +68,7 @@ blogRouter.delete(
   middleware.userExtractor,
   async (request, response, next) => {
     const foundBlog = await blog.findById(request.params.id);
+
     const blogUserId = foundBlog.user.toString();
     if (request.userId !== blogUserId) {
       response.status(401).json({ error: "User not authorized" });

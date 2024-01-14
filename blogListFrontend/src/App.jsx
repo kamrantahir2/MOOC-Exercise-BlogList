@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import login from "./services/login.js";
 import blogService from "./services/blogs.js";
 import Blog from "./components/Blog.jsx";
+import loginService from "./services/login.js";
 
 function App() {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -10,6 +10,9 @@ function App() {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [url, setUrl] = useState("");
 
   useEffect(() => {
     const loggedInUser = window.localStorage.getItem("loggedBlogappUser");
@@ -31,10 +34,10 @@ function App() {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const user = await login({ username, password });
+      const user = await loginService.login({ username, password });
 
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
-
+      blogService.setToken(user.token);
       setUser(user);
       setUsername("");
       setPassword("");
@@ -47,7 +50,24 @@ function App() {
   };
 
   const handleLogout = () => {
+    window.localStorage.removeItem("loggedBlogappUser");
+    blogService.setToken(null);
     setUser(null);
+  };
+
+  const handleCreate = async (event) => {
+    event.preventDefault();
+    const blog = { title, author, url };
+    const created = await blogService.create(blog);
+    console.log("New blog created: ", created);
+    const allBlogs = await blogService.getAll();
+    setBlogs(allBlogs);
+  };
+
+  const handleDelete = async (id) => {
+    await blogService.deleteBlog(id);
+    const allBlogs = await blogService.getAll();
+    setBlogs(allBlogs);
   };
 
   if (!user) {
@@ -80,12 +100,45 @@ function App() {
 
   return (
     <div>
-      <h1>Blogs</h1>
+      <h2>Blogs</h2>
+      <p>{user.name} logged in</p>
       <button onClick={handleLogout}>Log out</button>
+      <p>Create new blog:</p>
+
+      <form onSubmit={handleCreate}>
+        <div>
+          Title:{" "}
+          <input
+            type="text"
+            onChange={({ target }) => setTitle(target.value)}
+          />
+        </div>
+
+        <div>
+          Author:{" "}
+          <input
+            type="text"
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+        </div>
+
+        <div>
+          Url:{" "}
+          <input type="text" onChange={({ target }) => setUrl(target.value)} />
+        </div>
+
+        <button type="submit">Submit</button>
+      </form>
+
       <ul>
-        {/* {console.log("user", user)} */}
         {blogs.map((blog) => {
-          return <Blog key={blog.id} blog={blog} />;
+          return (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              handleDelete={() => handleDelete(blog.id)}
+            />
+          );
         })}
       </ul>
     </div>
