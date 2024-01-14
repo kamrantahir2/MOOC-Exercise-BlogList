@@ -28,8 +28,6 @@ function App() {
     });
   }, []);
 
-  console.log("blogs", blogs);
-
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
@@ -47,6 +45,11 @@ function App() {
       }, 5000);
     }
   };
+
+  const handleLogout = () => {
+    setUser(null);
+  };
+
   if (!user) {
     return (
       <>
@@ -78,6 +81,7 @@ function App() {
   return (
     <div>
       <h1>Blogs</h1>
+      <button onClick={handleLogout}>Log out</button>
       <ul>
         {/* {console.log("user", user)} */}
         {blogs.map((blog) => {
