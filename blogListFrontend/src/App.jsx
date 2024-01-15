@@ -3,6 +3,7 @@ import "./App.css";
 import blogService from "./services/blogs.js";
 import Blog from "./components/Blog.jsx";
 import loginService from "./services/login.js";
+import BlogForm from "./components/BlogForm.jsx";
 
 function App() {
   const [message, setMessage] = useState(null);
@@ -10,10 +11,6 @@ function App() {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
-  const [likes, setLikes] = useState("");
   const [style, setStyle] = useState(null);
 
   const resetMessage = () => {
@@ -69,30 +66,6 @@ function App() {
     resetMessage();
   };
 
-  const handleCreate = async (event) => {
-    try {
-      event.preventDefault();
-      if (!title || !author | !url) {
-        setMessage("Blog must have a title, author and URL");
-        setStyle("error");
-        resetMessage();
-        return;
-      }
-      const blog = { title, author, url, likes };
-      const created = await blogService.create(blog);
-      console.log("New blog created: ", created);
-      const allBlogs = await blogService.getAll();
-      setBlogs(allBlogs);
-      setMessage("New blog has been added");
-      setStyle("message");
-      resetMessage();
-    } catch (error) {
-      setMessage(error);
-      setStyle("error");
-      resetMessage();
-    }
-  };
-
   const handleDelete = async (id) => {
     try {
       await blogService.deleteBlog(id);
@@ -106,6 +79,19 @@ function App() {
       setStyle("error");
       resetMessage();
     }
+  };
+
+  const blogForm = () => {
+    return (
+      <div>
+        <BlogForm
+          setMessage={setMessage}
+          setStyle={setStyle}
+          resetMessage={resetMessage}
+          setBlogs={setBlogs}
+        />
+      </div>
+    );
   };
 
   if (!user) {
@@ -144,38 +130,7 @@ function App() {
       <button onClick={handleLogout}>Log out</button>
       <p>Create new blog:</p>
 
-      <form onSubmit={handleCreate}>
-        <div>
-          Title:{" "}
-          <input
-            type="text"
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-
-        <div>
-          Author:{" "}
-          <input
-            type="text"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-
-        <div>
-          Url:{" "}
-          <input type="text" onChange={({ target }) => setUrl(target.value)} />
-        </div>
-
-        <div>
-          Likes:{" "}
-          <input
-            type="text"
-            onChange={({ target }) => setLikes(target.value)}
-          />
-        </div>
-
-        <button type="submit">Submit</button>
-      </form>
+      {blogForm()}
 
       <ul>
         {blogs.map((blog) => {
