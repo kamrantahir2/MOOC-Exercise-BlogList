@@ -1,5 +1,4 @@
 import { useState } from "react";
-import blogService from "../services/blogs.js";
 
 const BlogForm = (props) => {
   const [title, setTitle] = useState("");
@@ -16,10 +15,7 @@ const BlogForm = (props) => {
       return;
     }
     const blog = { title, author, url, likes };
-    const created = await blogService.create(blog);
-    console.log("New blog created: ", created);
-    const allBlogs = await blogService.getAll();
-    props.setBlogs(allBlogs);
+    props.createBlog(blog);
     props.setMessage("New blog has been added");
     props.setStyle("message");
     props.resetMessage();

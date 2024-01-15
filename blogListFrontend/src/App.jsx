@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import blogService from "./services/blogs.js";
 import Blog from "./components/Blog.jsx";
@@ -13,6 +13,15 @@ function App() {
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
   const [style, setStyle] = useState(null);
+
+  const blogFormRef = useRef();
+
+  const addBlog = (blog) => {
+    blogFormRef.current.toggleVisibility();
+    blogService.create(blog).then((returned) => {
+      setBlogs(blogs.concat(returned));
+    });
+  };
 
   const resetMessage = () => {
     setTimeout(() => {
@@ -84,14 +93,14 @@ function App() {
 
   const blogForm = () => {
     return (
-      <div>
+      <Togglable buttonLabel="New blog" ref={blogFormRef}>
         <BlogForm
           setMessage={setMessage}
           setStyle={setStyle}
           resetMessage={resetMessage}
-          setBlogs={setBlogs}
+          createBlog={addBlog}
         />
-      </div>
+      </Togglable>
     );
   };
 
