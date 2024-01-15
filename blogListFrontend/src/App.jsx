@@ -4,6 +4,7 @@ import blogService from "./services/blogs.js";
 import Blog from "./components/Blog.jsx";
 import loginService from "./services/login.js";
 import BlogForm from "./components/BlogForm.jsx";
+import Togglable from "./components/Togglable.jsx";
 
 function App() {
   const [message, setMessage] = useState(null);
