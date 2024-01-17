@@ -15,6 +15,7 @@ function App() {
   const [style, setStyle] = useState(null);
 
   const blogFormRef = useRef();
+  const blogInfoRef = useRef();
 
   const addBlog = (blog) => {
     blogFormRef.current.toggleVisibility();
@@ -85,10 +86,19 @@ function App() {
       setStyle("message");
       resetMessage();
     } catch (error) {
-      setMessage("Error deleting blog", error);
+      setMessage("Unauthorized user", error);
       setStyle("error");
       resetMessage();
     }
+  };
+
+  const handleUpdate = async (id) => {
+    const blog = await blogService.getById(id);
+    const updatedLikes = blog.likes + 1;
+    const updatedBlog = { ...blog, likes: updatedLikes };
+    const updated = await blogService.update(id, updatedBlog);
+    const blogList = await blogService.getAll();
+    setBlogs(blogList);
   };
 
   const blogForm = () => {
@@ -149,6 +159,8 @@ function App() {
               key={blog.id}
               blog={blog}
               handleDelete={() => handleDelete(blog.id)}
+              blogRef={blogInfoRef}
+              update={() => handleUpdate(blog.id)}
             />
           );
         })}
