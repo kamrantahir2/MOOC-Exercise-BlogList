@@ -9,7 +9,10 @@ const setToken = (newToken) => {
 
 const getAll = async () => {
   const request = await axios.get(baseUrl);
-  console.log;
+  request.data.sort((a, b) => {
+    return b.likes - a.likes;
+  });
+  console.log("DATA: ", request.data);
   return request.data;
 };
 

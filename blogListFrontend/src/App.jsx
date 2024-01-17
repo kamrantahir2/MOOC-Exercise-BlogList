@@ -44,7 +44,7 @@ function App() {
   useEffect(() => {
     blogService.getAll().then((response) => {
       setBlogs(response);
-      console.log(response);
+      console.log(blogs);
     });
   }, []);
 
@@ -96,7 +96,7 @@ function App() {
     const blog = await blogService.getById(id);
     const updatedLikes = blog.likes + 1;
     const updatedBlog = { ...blog, likes: updatedLikes };
-    const updated = await blogService.update(id, updatedBlog);
+    await blogService.update(id, updatedBlog);
     const blogList = await blogService.getAll();
     setBlogs(blogList);
   };
