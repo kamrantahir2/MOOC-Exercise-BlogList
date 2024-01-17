@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import Togglable from "./Togglable.jsx";
+import PropTypes from "prop-types";
 
 const Blog = ({ blog, handleDelete, blogRef, update }) => {
   return (
@@ -16,6 +17,13 @@ const Blog = ({ blog, handleDelete, blogRef, update }) => {
       <div>------</div>
     </>
   );
+};
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+  update: PropTypes.func.isRequired,
+  blogRef: PropTypes.object.isRequired,
 };
 
 export default Blog;

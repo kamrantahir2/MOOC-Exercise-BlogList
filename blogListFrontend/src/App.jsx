@@ -152,7 +152,7 @@ function App() {
 
       {blogForm()}
 
-      <ul>
+      <div>
         {blogs.map((blog) => {
           return (
             <Blog
@@ -164,7 +164,7 @@ function App() {
             />
           );
         })}
-      </ul>
+      </div>
     </div>
   );
 }
