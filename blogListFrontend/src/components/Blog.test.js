@@ -2,6 +2,7 @@ import React from "react";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import Blog from "./Blog";
+import userEvent from "@testing-library/user-event";
 
 test("renders content", () => {
   const blog = {
@@ -36,9 +37,26 @@ test("Title and author render for blog", () => {
   const blogAuthor = container.querySelector(".blogAuthor");
   expect(blogAuthor).toHaveTextContent("Author: Test Author");
 
-  const likes = container.querySelector(".likes");
-  expect(likes).toBeDefined();
-
   const display = container.querySelector(".display");
   expect(display).toHaveStyle("display: none");
+});
+
+test("content is displayed when togglable is clicked", async () => {
+  const user = userEvent.setup();
+
+  const blog = {
+    title: "Test Blog",
+    author: "Test Author",
+    url: "Test URL",
+    likes: 301,
+    user: "659d8f5e71aa3c7f1949c99a",
+  };
+
+  const { container } = render(<Blog blog={blog} />);
+
+  const button = container.querySelector(".showButton");
+  await user.click(button);
+
+  const display = container.querySelector(".display");
+  expect(display).toHaveStyle("display: block");
 });
