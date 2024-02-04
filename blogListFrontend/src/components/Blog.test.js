@@ -3,8 +3,10 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import Blog from "./Blog";
 import userEvent from "@testing-library/user-event";
+import { jest } from "@jest/globals";
 
 let container;
+let update;
 
 beforeEach(() => {
   const blog = {
@@ -15,7 +17,9 @@ beforeEach(() => {
     user: "659d8f5e71aa3c7f1949c99a",
   };
 
-  container = render(<Blog blog={blog} />).container;
+  update = jest.fn();
+
+  container = render(<Blog blog={blog} update={update} />).container;
 });
 
 test("renders content", () => {
@@ -43,4 +47,16 @@ test("content is displayed when togglable is clicked", async () => {
 
   const display = container.querySelector(".display");
   expect(display).toHaveStyle("display: block");
+});
+
+test("likes button pressed twiced results in 2  calls", async () => {
+  const user = userEvent.setup();
+  const showButton = container.querySelector(".showButton");
+  await user.click(showButton);
+
+  const likeButton = container.querySelector(".likeButton");
+  await user.click(likeButton);
+  await user.click(likeButton);
+
+  expect(update.mock.calls).toHaveLength(2);
 });

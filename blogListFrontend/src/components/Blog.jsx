@@ -12,7 +12,9 @@ const Blog = ({ blog, handleDelete, blogRef, update }) => {
         <div className="likes">Likes: {blog.likes}</div>
         <div className="url">URL: {blog.url}</div>
         <div>User: {blog.user.name}</div>
-        <button onClick={update}>Like</button>
+        <button onClick={update} className="likeButton">
+          Like
+        </button>
         <button onClick={handleDelete}>Delete</button>
       </Togglable>
       <div>------</div>
