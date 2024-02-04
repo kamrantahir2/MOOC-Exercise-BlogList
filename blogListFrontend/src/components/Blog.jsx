@@ -6,10 +6,11 @@ const Blog = ({ blog, handleDelete, blogRef, update }) => {
   return (
     <div className="blogDiv">
       <div className="blogTitle">Title: {blog.title}</div>
+      <div className="blogAuthor">Author: {blog.author}</div>
+
       <Togglable buttonLabel="View blog info" ref={blogRef}>
-        <div>Author: {blog.author}</div>
-        <div>Likes: {blog.likes}</div>
-        <div>URL: {blog.url}</div>
+        <div className="likes">Likes: {blog.likes}</div>
+        <div className="url">URL: {blog.url}</div>
         <div>User: {blog.user.name}</div>
         <button onClick={update}>Like</button>
         <button onClick={handleDelete}>Delete</button>
