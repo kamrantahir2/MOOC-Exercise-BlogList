@@ -25,25 +25,43 @@ const BlogForm = (props) => {
     <form onSubmit={handleCreate}>
       <div>
         Title:{" "}
-        <input type="text" onChange={({ target }) => setTitle(target.value)} />
+        <input
+          type="text"
+          onChange={({ target }) => setTitle(target.value)}
+          className="titleInput"
+        />
       </div>
 
       <div>
         Author:{" "}
-        <input type="text" onChange={({ target }) => setAuthor(target.value)} />
+        <input
+          type="text"
+          onChange={({ target }) => setAuthor(target.value)}
+          className="authorInput"
+        />
       </div>
 
       <div>
         Url:{" "}
-        <input type="text" onChange={({ target }) => setUrl(target.value)} />
+        <input
+          type="text"
+          onChange={({ target }) => setUrl(target.value)}
+          className="urlInput"
+        />
       </div>
 
       <div>
         Likes:{" "}
-        <input type="text" onChange={({ target }) => setLikes(target.value)} />
+        <input
+          type="text"
+          onChange={({ target }) => setLikes(target.value)}
+          className="likesInput"
+        />
       </div>
 
-      <button type="submit">Submit</button>
+      <button type="submit" className="submitButton">
+        Submit
+      </button>
     </form>
   );
 };
