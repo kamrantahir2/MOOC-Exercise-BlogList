@@ -4,7 +4,9 @@ import { render, screen } from "@testing-library/react";
 import Blog from "./Blog";
 import userEvent from "@testing-library/user-event";
 
-test("renders content", () => {
+let container;
+
+beforeEach(() => {
   const blog = {
     title: "Test Blog",
     author: "Test Author",
@@ -13,24 +15,16 @@ test("renders content", () => {
     user: "659d8f5e71aa3c7f1949c99a",
   };
 
-  const { container } = render(<Blog blog={blog} />);
+  container = render(<Blog blog={blog} />).container;
+});
 
+test("renders content", () => {
   const div = container.querySelector(".blogTitle");
 
   expect(div).toHaveTextContent("Title: Test Blog");
 });
 
 test("Title and author render for blog", () => {
-  const blog = {
-    title: "Test Blog",
-    author: "Test Author",
-    url: "Test URL",
-    likes: 301,
-    user: "659d8f5e71aa3c7f1949c99a",
-  };
-
-  const { container } = render(<Blog blog={blog} />);
-
   const blogTitle = container.querySelector(".blogTitle");
   expect(blogTitle).toHaveTextContent("Title: Test Blog");
 
@@ -43,16 +37,6 @@ test("Title and author render for blog", () => {
 
 test("content is displayed when togglable is clicked", async () => {
   const user = userEvent.setup();
-
-  const blog = {
-    title: "Test Blog",
-    author: "Test Author",
-    url: "Test URL",
-    likes: 301,
-    user: "659d8f5e71aa3c7f1949c99a",
-  };
-
-  const { container } = render(<Blog blog={blog} />);
 
   const button = container.querySelector(".showButton");
   await user.click(button);
