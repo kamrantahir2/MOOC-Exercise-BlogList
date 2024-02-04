@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 
 const Blog = ({ blog, handleDelete, blogRef, update }) => {
   return (
-    <>
-      <div>Title: {blog.title}</div>
+    <div className="blogDiv">
+      <div className="blogTitle">Title: {blog.title}</div>
       <Togglable buttonLabel="View blog info" ref={blogRef}>
         <div>Author: {blog.author}</div>
         <div>Likes: {blog.likes}</div>
@@ -15,15 +15,15 @@ const Blog = ({ blog, handleDelete, blogRef, update }) => {
         <button onClick={handleDelete}>Delete</button>
       </Togglable>
       <div>------</div>
-    </>
+    </div>
   );
 };
 
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  handleDelete: PropTypes.func.isRequired,
-  update: PropTypes.func.isRequired,
-  blogRef: PropTypes.object.isRequired,
-};
+// Blog.propTypes = {
+//   blog: PropTypes.object.isRequired,
+//   handleDelete: PropTypes.func.isRequired,
+//   update: PropTypes.func.isRequired,
+//   blogRef: PropTypes.object.isRequired,
+// };
 
 export default Blog;
